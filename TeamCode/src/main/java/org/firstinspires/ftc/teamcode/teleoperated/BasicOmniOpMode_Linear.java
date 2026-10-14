@@ -94,8 +94,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
         // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
         // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
+        frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
+        backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
 
@@ -108,10 +108,10 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetry.addLine("Running motors at 10% speed");
-            frontLeftDrive.setPower(0.1);
-            frontRightDrive.setPower(0.1);
-            backLeftDrive.setPower(0.1);
-            backRightDrive.setPower(0.1);
+            telemetry.addLine("Running motors at 25% speed");
+            frontLeftDrive.setPower(0.25);
+            frontRightDrive.setPower(0.25);
+            backLeftDrive.setPower(0.25);
+            backRightDrive.setPower(0.25);
         }
     }}
