@@ -41,7 +41,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         flywheelMotor.setDirection(DcMotor.Direction.FORWARD);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
 
-        intakeServo.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeServo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
