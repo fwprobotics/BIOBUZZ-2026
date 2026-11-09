@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class Shooter{
     private DcMotorEx flywheelMotor = null;
@@ -16,11 +17,13 @@ public class Shooter{
     public Shooter(HardwareMap hardwareMap) {
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "flywheel_motor");
         feederservo = hardwareMap.get(CRServo.class, "intake_servo");
-    }
-    private void initShooterConfig() {
+
         feederservo.setDirection(CRServo.Direction.REVERSE);
         flywheelMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(2.0, 0.3, 0.0, 11.1));
     }
+
     public class MaintainVelocityOfFlywheelMotor implements Action {
         private SleepAction timer;
 
@@ -68,13 +71,16 @@ public class Shooter{
 
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                telemetryPacket.put("Velocity:", flywheelMotor.getVelocity());
                 flywheelMotor.setVelocity(speed);
                 if (Math.abs(flywheelMotor.getVelocity() - speed) < tolerance) {
                     feederservo.setPower(1.0);
-
                 }
+
                 if (feederservo.getPower()==1.0){
-                    if (flywheelMotor.getVelocity()>tolerance) {
+                    if (Math.abs(flywheelMotor.getVelocity() - speed) >300) {
+                        feederservo.setPower(0.0);
+                        flywheelMotor.setPower(0.0);
                         return false;
                     }
                     return true;

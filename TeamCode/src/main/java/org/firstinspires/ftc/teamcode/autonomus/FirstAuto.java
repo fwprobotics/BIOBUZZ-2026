@@ -14,8 +14,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
+@Autonomous(name = "First Auto", group = "Auto")
 public final class FirstAuto extends LinearOpMode {
     private Robot robot;
     @Override
@@ -26,10 +27,13 @@ public final class FirstAuto extends LinearOpMode {
         Collector collector = robot.getCollector();
         waitForStart();
 
-       Actions.runBlocking(new SequentialAction(
-               new shooter.ChargeAndShoot(1450);
+        Actions.runBlocking(new SequentialAction(
+                shooter.chargeAndShoot(1400),
+                shooter.chargeAndShoot(1400),
+                shooter.chargeAndShoot(1400),
+                shooter.chargeAndShoot(1400)
+        ));
 
-       ))
 
 
 
