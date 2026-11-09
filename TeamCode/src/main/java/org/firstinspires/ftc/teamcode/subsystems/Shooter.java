@@ -62,16 +62,21 @@ public class Shooter{
     }
 
     public class ChargeAndShoot implements Action {
+            private SleepAction timeout;
             private double speed;
             private double tolerance = 20.0;
             public ChargeAndShoot(double speed){
                 this.speed = speed;
-
+                timeout = new SleepAction(5);
             }
 
             @Override
             public boolean run(@NonNull TelemetryPacket telemetryPacket) {
                 telemetryPacket.put("Velocity:", flywheelMotor.getVelocity());
+                if (!timeout.run(telemetryPacket)) {
+                    return false;
+                }
+
                 flywheelMotor.setVelocity(speed);
                 if (Math.abs(flywheelMotor.getVelocity() - speed) < tolerance) {
                     feederservo.setPower(1.0);

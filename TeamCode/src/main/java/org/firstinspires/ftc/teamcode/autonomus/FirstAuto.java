@@ -33,10 +33,10 @@ public final class FirstAuto extends LinearOpMode {
         waitForStart();
 
         Actions.runBlocking(new SequentialAction(
-//                shooter.chargeAndShoot(1400),
-//                shooter.chargeAndShoot(1400),
-//                shooter.chargeAndShoot(1400),
-//                shooter.chargeAndShoot(1400),
+                shooter.chargeAndShoot(1400),
+                shooter.chargeAndShoot(1400),
+                shooter.chargeAndShoot(1400),
+                shooter.chargeAndShoot(1400),
                 traj
         ));
 
