@@ -14,6 +14,9 @@ public class Collector {
     private CRServo leftflower = null;
     private CRServo rightflower = null;
 
+    public boolean collectFloor;
+    public boolean collectFlower;
+
     public Collector(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
         leftflower = hardwareMap.get(CRServo.class, "left_intake_servo");
@@ -23,9 +26,28 @@ public class Collector {
         leftflower.setDirection(CRServo.Direction.FORWARD);
         rightflower.setDirection(CRServo.Direction.FORWARD);
     }
+    public void setcollectFloor(boolean bool){
+        this.collectFloor = bool;
 
+    }
+    public void setcollectFlower(boolean bool){
+        this.collectFlower = bool;
+    }
     public void OpModeUpdate() {
-        //todo: teleop mode work
+        if (collectFloor || collectFlower){
+            intakeMotor.setPower(1.0);
+            if (collectFlower){
+                leftflower.setPower(1.0);
+                rightflower.setPower(1.0);
+            } else {
+                leftflower.setPower(0.0);
+                rightflower.setPower(0.0);
+            }
+        } else {
+            intakeMotor.setPower(0.0);
+            leftflower.setPower(0.0);
+            rightflower.setPower(0.0);
+        }
     }
 
     public class RunIntake implements Action {

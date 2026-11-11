@@ -16,6 +16,11 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 public class Shooter {
     private DcMotorEx flywheelMotor = null;
     private CRServo feederservo = null;
+    public boolean chargeShoot;
+    public boolean maintainVelocity;
+    public boolean runPinwheel;
+    public int setVelocity = 1400;
+    public int tolerance = 20;
 
     public Shooter(HardwareMap hardwareMap) {
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "flywheel_motor");
@@ -27,8 +32,36 @@ public class Shooter {
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(2.0, 0.3, 0.0, 11.1));
     }
 
+    public void setChargeShoot(boolean bool){
+        this.chargeShoot = bool;
+
+    }
+    public void setMaintainVelocity(boolean bool){
+        this.maintainVelocity = bool;
+    }
+    public void runPinwheel(boolean bool){
+        this.runPinwheel = bool;
+    }
     public void OpModeUpdate() {
-        // todo: teleop mode work.
+        if (runPinwheel){
+           feederservo.setPower(1.0);
+        } else {
+            feederservo.setPower(0.0);
+        }
+        if (chargeShoot || maintainVelocity){
+            flywheelMotor.setVelocity(1400);
+            if (chargeShoot){
+                if ((Math.abs(flywheelMotor.getVelocity() - setVelocity)) <= tolerance) {
+                    feederservo.setPower(1.0);
+                }
+                if ((feederservo.getPower() == 1.0) && (Math.abs(flywheelMotor.getVelocity()) - setVelocity) >= 300) {
+                    feederservo.setPower(0.0);
+                }
+            }
+        } else {
+            flywheelMotor.setVelocity(0.0);
+            feederservo.setPower(0.0);
+        }
     }
 
     public class MaintainVelocityOfFlywheelMotor implements Action {
