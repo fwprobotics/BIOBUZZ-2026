@@ -27,17 +27,18 @@ public final class FirstAuto extends LinearOpMode {
         Shooter shooter = robot.getShooter();
         Collector collector = robot.getCollector();
         Action traj = drive.actionBuilder(startingPose)
-                .splineTo(new Vector2d(-50.7805, -44.8976), Math.toRadians(90))
-                .splineTo(new Vector2d(-53.561, 34.0683), Math.toRadians(89.9948))
+                .splineToConstantHeading(new Vector2d(-13.5512, -48.2341), Math.toRadians(113.5986))
+                .splineToConstantHeading(new Vector2d(-50.0634, -38.1659), Math.toRadians(93.9909))
+                .splineToConstantHeading(new Vector2d(-53.561, 34.0683), Math.toRadians(89.9948))
                 .build();
         waitForStart();
 
         Actions.runBlocking(new SequentialAction(
-                shooter.chargeAndShoot(1400),
-                shooter.chargeAndShoot(1400),
-                shooter.chargeAndShoot(1400),
-                shooter.chargeAndShoot(1400),
-                traj
+                shooter.chargeAndShoot(1400, 3),
+                shooter.chargeAndShoot(1400, 3),
+                shooter.chargeAndShoot(1400, 3),
+                shooter.chargeAndShoot(1400, 3)
+                //traj
         ));
 
 

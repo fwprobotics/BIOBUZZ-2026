@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.graphics.ImageDecoder;
+
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -11,9 +13,10 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-public class Shooter{
+public class Shooter {
     private DcMotorEx flywheelMotor = null;
     private CRServo feederservo = null;
+
     public Shooter(HardwareMap hardwareMap) {
         flywheelMotor = hardwareMap.get(DcMotorEx.class, "flywheel_motor");
         feederservo = hardwareMap.get(CRServo.class, "intake_servo");
@@ -22,6 +25,10 @@ public class Shooter{
         flywheelMotor.setDirection(DcMotorEx.Direction.FORWARD);
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(2.0, 0.3, 0.0, 11.1));
+    }
+
+    public void OpModeUpdate() {
+        // todo: teleop mode work.
     }
 
     public class MaintainVelocityOfFlywheelMotor implements Action {
@@ -40,6 +47,10 @@ public class Shooter{
             flywheelMotor.setPower(0.0);
             return false;
         }
+    }
+
+    public MaintainVelocityOfFlywheelMotor maintainVelocityOfFlywheelMotor(int duration) {
+        return new MaintainVelocityOfFlywheelMotor(duration);
     }
 
     public class RunFeederServo implements Action {
@@ -61,42 +72,48 @@ public class Shooter{
 
     }
 
+    public RunFeederServo runFeederServo(int duration) {
+        return new RunFeederServo(duration);
+    }
+
     public class ChargeAndShoot implements Action {
-            private SleepAction timeout;
-            private double speed;
-            private double tolerance = 20.0;
-            public ChargeAndShoot(double speed){
-                this.speed = speed;
-                timeout = new SleepAction(5);
+        private SleepAction timeout;
+        private double speed;
+        private double tolerance = 20.0;
+
+        public ChargeAndShoot(double speed, int maxTime) {
+            this.speed = speed;
+            timeout = new SleepAction(maxTime);
+        }
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            telemetryPacket.put("Velocity:", flywheelMotor.getVelocity());
+            if (!timeout.run(telemetryPacket)) {
+                return false;
             }
 
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                telemetryPacket.put("Velocity:", flywheelMotor.getVelocity());
-                if (!timeout.run(telemetryPacket)) {
+            flywheelMotor.setVelocity(speed);
+            if (Math.abs(flywheelMotor.getVelocity() - speed) < tolerance) {
+                feederservo.setPower(1.0);
+            }
+
+            if (feederservo.getPower() == 1.0) {
+                if (Math.abs(flywheelMotor.getVelocity() - speed) > 300) {
+                    feederservo.setPower(0.0);
+                    flywheelMotor.setPower(0.0);
                     return false;
                 }
-
-                flywheelMotor.setVelocity(speed);
-                if (Math.abs(flywheelMotor.getVelocity() - speed) < tolerance) {
-                    feederservo.setPower(1.0);
-                }
-
-                if (feederservo.getPower()==1.0){
-                    if (Math.abs(flywheelMotor.getVelocity() - speed) >300) {
-                        feederservo.setPower(0.0);
-                        flywheelMotor.setPower(0.0);
-                        return false;
-                    }
-                    return true;
-                }
                 return true;
-
             }
+            return true;
+
         }
-        public Shooter.ChargeAndShoot chargeAndShoot(double speed){
-            return new Shooter.ChargeAndShoot(speed);
-        }
+    }
+
+    public Shooter.ChargeAndShoot chargeAndShoot(double speed, int maxTime) {
+        return new Shooter.ChargeAndShoot(speed, maxTime);
+    }
 
 
 }
