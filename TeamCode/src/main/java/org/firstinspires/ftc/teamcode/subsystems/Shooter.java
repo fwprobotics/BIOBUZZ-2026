@@ -49,7 +49,7 @@ public class Shooter {
 
         if (chargeShoot || maintainVelocity){
             flywheelMotor.setVelocity(1400);
-            if (chargeShoot){
+            if (chargeShoot) {
                 if ((Math.abs(flywheelMotor.getVelocity() - setVelocity)) <= tolerance) {
                     feederservo.setPower(1.0);
                 }
@@ -59,9 +59,9 @@ public class Shooter {
             }
         } else {
             if (!runPinwheel) {
-                flywheelMotor.setVelocity(0.0);
+                feederservo.setPower(0.0);
             }
-            feederservo.setPower(0.0);
+            flywheelMotor.setVelocity(0.0);
         }
     }
 
