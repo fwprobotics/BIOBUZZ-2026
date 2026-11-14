@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Collector {
@@ -24,7 +25,7 @@ public class Collector {
 
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
         leftflower.setDirection(CRServo.Direction.FORWARD);
-        rightflower.setDirection(CRServo.Direction.FORWARD);
+        rightflower.setDirection(CRServo.Direction.REVERSE);
     }
     public void setcollectFloor(boolean bool){
         this.collectFloor = bool;
@@ -39,9 +40,6 @@ public class Collector {
             if (collectFlower){
                 leftflower.setPower(1.0);
                 rightflower.setPower(1.0);
-            } else {
-                leftflower.setPower(0.0);
-                rightflower.setPower(0.0);
             }
         } else {
             intakeMotor.setPower(0.0);

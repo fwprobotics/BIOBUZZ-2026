@@ -29,7 +29,7 @@ public class Shooter {
         feederservo.setDirection(CRServo.Direction.REVERSE);
         flywheelMotor.setDirection(DcMotorEx.Direction.FORWARD);
         flywheelMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(2.0, 0.3, 0.0, 11.1));
+        flywheelMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(2.3, 0.25, 0.0, 11.1));
     }
 
     public void setChargeShoot(boolean bool){
@@ -43,11 +43,10 @@ public class Shooter {
         this.runPinwheel = bool;
     }
     public void OpModeUpdate() {
-        if (runPinwheel){
-           feederservo.setPower(1.0);
-        } else {
-            feederservo.setPower(0.0);
+        if (runPinwheel) {
+            feederservo.setPower(1.0);
         }
+
         if (chargeShoot || maintainVelocity){
             flywheelMotor.setVelocity(1400);
             if (chargeShoot){
@@ -59,7 +58,9 @@ public class Shooter {
                 }
             }
         } else {
-            flywheelMotor.setVelocity(0.0);
+            if (!runPinwheel) {
+                flywheelMotor.setVelocity(0.0);
+            }
             feederservo.setPower(0.0);
         }
     }
